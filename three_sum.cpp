@@ -91,7 +91,12 @@ void three_sum (int *elem, int N, bool has_neg)
 
   for (int i=start; i>=0; i--) {
     for (int j=0; j<i; j++) {
+      // 0 + b = b skip all 0's
       if (elem[j] == 0) continue;
+
+      //remove duplicates
+      if(j!=0 && elem[j] == elem[j-1]) continue;
+      if(i!=N && elem[i] == elem[i+1]) continue;
 
       int search_elem = elem[i] + elem [j];
       if (search_elem > max) break;
@@ -136,7 +141,7 @@ int main (int argc, char **argv)
     elements[i] = rand()%num_elem;
     if (elements[i] < 0)  has_negative = true;
   }
-  //print_elem (elements, num_elem, "Init");
+  print_elem (elements, num_elem, "Init");
 
   clock_t startTime = clock();
   // sort the array using quick sort
