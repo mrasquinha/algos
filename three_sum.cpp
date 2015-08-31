@@ -1,6 +1,9 @@
 #include <cstdlib>
 #include <stdio.h>
 
+// Solve the 3sum problem: Given an array(S) find all unique pairs 
+// such that a+b=c and a,b,c belong to S and a != b != c
+
 //swap two numbers
 void swap (int *a, int *b)
 {
