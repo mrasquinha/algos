@@ -1,5 +1,7 @@
 #include <cstdlib>
 #include <stdio.h>
+#include <ctime>
+#include <assert.h>
 
 // Solve the 3sum problem: Given an array(S) find all unique pairs 
 // such that a+b=c and a,b,c belong to S and a != b != c
@@ -83,49 +85,31 @@ void three_sum (int *elem, int N, bool has_neg)
   int max = elem[N];
   int start = N;
   int is_3sum_cnt = 0;
-  int mask0 = 0, mask1 = 0;
 
   // Given no negative integers the max element will not meet 3sum
   if(!has_neg) start--;
 
   for (int i=start; i>=0; i--) {
-    int prev_elem = -1, prev_found = 0;
     for (int j=0; j<i; j++) {
-      bool found = false; //does this pair exist in array
       if (elem[j] == 0) continue;
-      if (prev_elem == elem[j] && prev_found) found = true;
-      
-      if(!found) {
-        int search_elem = elem[i] + elem [j];
-        if (search_elem > max) break;
-        int *sub_array = &elem[i+1];
-        int sub_array_elem = N - i;
 
-        //printf("Search %d in array starting at %d with %d elem \n", search_elem, i+1, sub_array_elem );
-        found = binary_search(sub_array, 0, sub_array_elem-1, search_elem);
-      }
+      int search_elem = elem[i] + elem [j];
+      if (search_elem > max) break;
+      int *sub_array = &elem[i+1];
+      int sub_array_elem = N - i;
+
+      //printf("Search %d in array starting at %d with %d elem \n", search_elem, i+1, sub_array_elem );
+      bool found = binary_search(sub_array, 0, sub_array_elem-1, search_elem);
 
       if (found) {
         is_3sum_cnt++;
-        // Do not flip the bit if this elem forms a 3sum twice
-        if((mask0 & (1<<i)) == 0) mask0 |= (1<<i);
-        if((mask1 & (1<<j)) == 0) mask1 |= (1<<j);
+        assert(elem[i]!=0 && "Wrong element detected");
+        assert(elem[j]!=0 && "Wrong elem detected");
+        //printf("pair %d->%d\n", elem[i], elem[j]);
       }
-
-      //update prev data
-      prev_elem = elem[j]; prev_found = 1;
     }
   }
 
-  if(mask0) { //mask0 and mask1 are updated together
-    printf("\nValues for a:\t");
-    for (int i=0; i<N; i++)
-      if(mask0 & (1<<i)) printf ("%d ", elem[i]);
-
-    printf("\nValues for b:\t");
-    for (int i=0; i<N; i++)
-      if(mask1 & (1<<i)) printf ("%d ", elem[i]);
-  }
   printf("\nthree_sum count = %d\n", is_3sum_cnt);
 }
 
@@ -152,13 +136,17 @@ int main (int argc, char **argv)
     elements[i] = rand()%num_elem;
     if (elements[i] < 0)  has_negative = true;
   }
-  print_elem (elements, num_elem, "Init");
+  //print_elem (elements, num_elem, "Init");
 
+  clock_t startTime = clock();
   // sort the array using quick sort
   sort (elements, num_elem);
   //print_elem(elements, num_elem, "Sorted");
   three_sum (elements, num_elem-1, has_negative);
+  clock_t endTime = clock();
+	clock_t time = (endTime - startTime)*1000.0/CLOCKS_PER_SEC;
 
+  printf("Total time %0.2f ms\n", (double)time);
   exit(0);
 }
 
