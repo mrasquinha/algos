@@ -6,6 +6,7 @@
 
 // Solve the 3sum problem: Given an array(S) find all unique pairs 
 // such that a+b=c and a,b,c belong to S and a != b != c
+// adding constraints of no duplicates; no negatives in data set
 
 //swap two numbers
 void swap (int *a, int *b)
@@ -125,22 +126,28 @@ void three_sum_hash (int *elem, int N, bool has_neg)
   int is_3sum_cnt = 0;
   int *table = (int*)malloc(sizeof(int)*(max+1));
   bzero(table, sizeof(int)*(max+1));
-printf("max is %d N is %d  ", max, N);
+  int start = (elem[0]) ? 0 : 1;
 
-  for (int a=0; a<N; a++) {
+  for (int a=start; a<N; a++) {
     bool found = false;
     for (int b=a+1; b<N; b++) {
       int c = elem[a] + elem[b];
       if(!found && table[elem[a]] != 0) { //was seen before
         printf("\n pair (%d) ->%d counts ", elem[a], table[elem[a]]);
         found = true;
-        is_3sum_cnt += table[elem[b]];
+        is_3sum_cnt += table[elem[a]];
       }
       if(c>0 && c<=max) { 
         printf("add (%d,%d,%d) ", elem[a], elem[b],c);
         table[c]++;
       }
     }
+    //check when b==N
+    if(a==(N-1) && table[elem[a]] != 0) { //was seen before
+        printf("\n pair (%d) ->%d counts ", elem[a], table[elem[a]]);
+        is_3sum_cnt += table[elem[a]];
+        break;
+      }
   }
 
   printf("\nthree_sum count = %d\n", is_3sum_cnt);
